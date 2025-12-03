@@ -2,6 +2,8 @@ import xgboost as xgb
 import numpy as np
 import pandas as pd
 from data_advanced import load_data
+from  generate_confusion_matrix import confusion_matrix_binary, print_confusion_matrix
+
 
 def main():
     # Load train and test data
@@ -28,6 +30,11 @@ def main():
     preds = model.predict(test_x)
 
     preds = preds.astype(int)
+
+    print("Confusion matrix for training set with XGBoost.")
+    TN, FP, FN, TP = confusion_matrix_binary(train_y, model.predict(train_x))
+    print_confusion_matrix(TN,FP,FN,TP)
+
 
     print("Writing submission file...")
 
