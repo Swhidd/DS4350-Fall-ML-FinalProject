@@ -39,6 +39,7 @@ Both pipelines implement:
 │   ├── train_xgboost.py
 ├── perceptron/                   <- perceptron implementation
 │   ├── data/
+│   │   └── (submission files appear here when generated, this can be changed in the train.py files)
 │   ├── cross_validation.py
 │   ├── data.py
 │   ├── epochs.py
