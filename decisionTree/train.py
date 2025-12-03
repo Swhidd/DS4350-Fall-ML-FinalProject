@@ -8,6 +8,7 @@ import pandas as pd
 from data import load_data, impute_with_mode, cap_feature_values
 from data_advanced import impute_with_median
 from model import DecisionTree, MajorityBaseline, Model
+from generate_confusion_matrix import confusion_matrix_binary, print_confusion_matrix
 # from bagging_id3 import BaggingClassifier
 # from random_forest_id3 import RandomForestClassifier
 
@@ -106,6 +107,36 @@ def calculate_f1_macro_manual(labels, predictions) -> float:
     f1_macro = sum(f1_scores) / len(f1_scores) if f1_scores else 0.0
     return f1_macro
 
+def confusion_matrix_binary(labels: list, predictions: list):
+    """
+    Compute confusion matrix for binary classes [0,1].
+    Returns (TN, FP, FN, TP).
+    """
+    TN = FP = FN = TP = 0
+
+    for true, pred in zip(labels, predictions):
+        if true == 0 and pred == 0:
+            TN += 1
+        elif true == 0 and pred == 1:
+            FP += 1
+        elif true == 1 and pred == 0:
+            FN += 1
+        elif true == 1 and pred == 1:
+            TP += 1
+
+    return TN, FP, FN, TP
+
+
+def print_confusion_matrix(TN, FP, FN, TP):
+    """
+    Prints a confusion matrix.
+    """
+    print("\nConfusion Matrix")
+    print("                Predicted 0    Predicted 1")
+    print(f"Actual 0       |    {TN:5d}         {FP:5d}")
+    print(f"Actual 1       |    {FN:5d}         {TP:5d}")
+
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train ID3 model')
@@ -163,6 +194,10 @@ if __name__ == '__main__':
     # Get model predictions
     preds = model.predict(test_x)
     preds = [int(p) for p in preds]
+
+    print(f"Confusion matrix for training set with {args.model} ID3.")
+    TN, FP, FN, TP = confusion_matrix_binary(train_y, model.predict(train_x))
+    print_confusion_matrix(TN,FP,FN,TP)
 
     # Load .ids for creating submission
     ids = [int(line.strip()) for line in open(args.ids_path)]

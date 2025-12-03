@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from data_advanced import load_data
 
-
 def main():
     # Load train and test data
     data_dict = load_data()
